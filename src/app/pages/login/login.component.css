@@ -1,0 +1,11 @@
+/* ...existing code... */
+.error {
+  color: #d32f2f;
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
+}
+.error.general {
+  margin: 8px 0;
+}
+/* ...existing code... */
