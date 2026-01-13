@@ -12,16 +12,16 @@ import { CommonModule } from '@angular/common';
   styleUrl: './register.component.css',
 })
 export class RegisterComponent {
-  activeTab: 'login' | 'signup' = 'signup';
+  activeTab: 'login' | 'register' = 'register';
 
-  setActiveTab(tab: 'login' | 'signup') {
+  setActiveTab(tab: 'login' | 'register') {
     this.activeTab = tab;
 
     if (tab === 'login') {
       this.router.navigate(['/login']);
     }
 
-    if (tab === 'signup') {
+    if (tab === 'register') {
       this.router.navigate(['/register']);
     }
   }
