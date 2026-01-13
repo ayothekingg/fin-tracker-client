@@ -1,0 +1,336 @@
+<!-- add-expense.component.html -->
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-8">
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-xl font-semibold text-gray-900"
+              >Expense Tracker</span
+            >
+          </div>
+
+          <nav class="flex space-x-4">
+            <button
+              (click)="navigateToDashboard()"
+              class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg font-medium flex items-center space-x-2 transition"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                ></path>
+              </svg>
+              <span>Dashboard</span>
+            </button>
+
+            <button
+              class="px-4 py-2 bg-purple-100 text-purple-600 rounded-lg font-medium flex items-center space-x-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span>Add Expense</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <span class="text-sm text-gray-600">{{ userEmail }}</span>
+          <button
+            (click)="logout()"
+            class="flex items-center space-x-2 text-red-600 hover:text-red-700 font-medium transition"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              ></path>
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Back Button -->
+    <button
+      (click)="navigateToDashboard()"
+      class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"
+        ></path>
+      </svg>
+      <span class="font-medium">Back to Dashboard</span>
+    </button>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Add New Expense</h1>
+        <p class="text-gray-600 mt-1">
+          Track your spending by adding a new expense
+        </p>
+      </div>
+
+      <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
+        <!-- Expense Description -->
+        <div class="mb-6">
+          <label
+            for="description"
+            class="block text-sm font-medium text-gray-900 mb-2"
+          >
+            Expense Description <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="description"
+            type="text"
+            formControlName="description"
+            placeholder="e.g., Grocery shopping, Uber ride, Netflix subscription"
+            [class.border-red-500]="isFieldInvalid('description')"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+          />
+          <p
+            *ngIf="isFieldInvalid('description')"
+            class="mt-1 text-sm text-red-500"
+          >
+            {{ getFieldError("description") }}
+          </p>
+        </div>
+
+        <!-- Amount and Date -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <!-- Amount -->
+          <div>
+            <label
+              for="amount"
+              class="block text-sm font-medium text-gray-900 mb-2"
+            >
+              Amount (₦) <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="amount"
+              type="number"
+              step="0.01"
+              formControlName="amount"
+              placeholder="0.00"
+              [class.border-red-500]="isFieldInvalid('amount')"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+            />
+            <p
+              *ngIf="isFieldInvalid('amount')"
+              class="mt-1 text-sm text-red-500"
+            >
+              {{ getFieldError("amount") }}
+            </p>
+          </div>
+
+          <!-- Date -->
+          <div>
+            <label
+              for="date"
+              class="block text-sm font-medium text-gray-900 mb-2"
+            >
+              Date <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="date"
+              type="date"
+              formControlName="date"
+              [class.border-red-500]="isFieldInvalid('date')"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+            />
+            <p *ngIf="isFieldInvalid('date')" class="mt-1 text-sm text-red-500">
+              {{ getFieldError("date") }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-900 mb-3">
+            Category <span class="text-red-500">*</span>
+          </label>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <button
+              *ngFor="let category of categories"
+              type="button"
+              (click)="selectCategory(category)"
+              [class.bg-purple-600]="selectedCategory === category"
+              [class.text-white]="selectedCategory === category"
+              [class.border-purple-600]="selectedCategory === category"
+              [class.bg-white]="selectedCategory !== category"
+              [class.text-gray-700]="selectedCategory !== category"
+              [class.border-gray-300]="selectedCategory !== category"
+              class="px-4 py-3 border-2 rounded-lg font-medium transition hover:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <p
+            *ngIf="isFieldInvalid('category')"
+            class="mt-2 text-sm text-red-500"
+          >
+            {{ getFieldError("category") }}
+          </p>
+        </div>
+
+        <!-- Notes -->
+        <div class="mb-8">
+          <label
+            for="notes"
+            class="block text-sm font-medium text-gray-900 mb-2"
+          >
+            Notes (Optional)
+          </label>
+          <textarea
+            id="notes"
+            formControlName="notes"
+            rows="4"
+            placeholder="Add any additional notes about this expense..."
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            [class.opacity-50]="isSubmitting"
+            [class.cursor-not-allowed]="isSubmitting"
+            class="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition flex items-center justify-center space-x-2"
+          >
+            <svg
+              *ngIf="!isSubmitting"
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            <svg
+              *ngIf="isSubmitting"
+              class="animate-spin w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>{{ isSubmitting ? "Adding..." : "Add Expense" }}</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="onCancel()"
+            [disabled]="isSubmitting"
+            class="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Help Text -->
+    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div class="flex items-start space-x-3">
+        <svg
+          class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+        <div>
+          <p class="text-sm text-blue-900 font-medium">
+            Tip: Be specific with your descriptions
+          </p>
+          <p class="text-sm text-blue-800 mt-1">
+            Adding detailed descriptions helps you track your spending patterns
+            more effectively.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
