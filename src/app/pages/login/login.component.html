@@ -1,21 +1,3 @@
-<!-- <form (ngSubmit)="submit()">
-  <input
-    type="email"
-    [(ngModel)]="email"
-    name="email"
-    placeholder="Email"
-    required
-  />
-  <input
-    type="password"
-    [(ngModel)]="password"
-    name="password"
-    placeholder="Password"
-    required
-  />
-  <button type="submit">Login</button>
-</form> -->
-
 <div
   class="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4"
 >
@@ -23,10 +5,11 @@
     <!-- Logo and Header -->
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl shadow-lg mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br bg-black rounded-3xl shadow-lg mb-4"
       >
         <svg
-          class="w-10 h-10 text-white"
+          (click)="navigateToLandingPage()"
+          class="w-10 h-10 text-white cursor-pointer"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -39,29 +22,35 @@
           ></path>
         </svg>
       </div>
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">Expense Tracker</h1>
-      <p class="text-gray-600">Manage your finances with ease</p>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">FinSight</h1>
+      <p class="text-gray-600">
+        Track your income, expenses, and taxes in one simple app
+      </p>
     </div>
 
     <!-- Login Card -->
-    <div class="bg-white rounded-2xl shadow-xl p-8">
+    <form
+      #loginForm
+      (ngSubmit)="submit()"
+      class="bg-white rounded-2xl shadow-xl p-8"
+    >
       <!-- Tab Buttons -->
       <div class="flex gap-2 mb-8">
         <button
           (click)="setActiveTab('login')"
           [class]="
             activeTab === 'login'
-              ? 'flex-1 py-3 px-6 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-700 shadow-lg shadow-purple-500/50 transition-all'
+              ? 'flex-1 py-3 px-6 rounded-xl font-semibold text-white bg-gradient-to-r bg-black shadow-lg  transition-all'
               : 'flex-1 py-3 px-6 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all'
           "
         >
           Login
         </button>
         <button
-          (click)="setActiveTab('signup')"
+          (click)="setActiveTab('register')"
           [class]="
-            activeTab === 'signup'
-              ? 'flex-1 py-3 px-6 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-700 shadow-lg shadow-purple-500/50 transition-all'
+            activeTab === 'register'
+              ? 'flex-1 py-3 px-6 rounded-xl font-semibold text-white bg-gradient-to-r bg-black shadow-lg transition-all'
               : 'flex-1 py-3 px-6 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all'
           "
         >
@@ -92,9 +81,24 @@
           </div>
           <input
             type="email"
+            [(ngModel)]="email"
+            name="email"
             placeholder="you@example.com"
             class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            required
+            #emailCtrl="ngModel"
           />
+          @if (emailCtrl.invalid && (emailCtrl.touched || submitted)){
+          <span class="text-red-500 text-sm"></span>
+
+          @if (emailCtrl.errors?.['required']) {
+          <span class="text-red-500 text-sm">Email is required</span>
+          } @else if (emailCtrl.errors?.['email']) {
+          <span *ngIf="emailCtrl.errors?.['email']">Enter a valid email</span>
+          } }
+          <span class="text-red-500 text-sm" *ngIf="fieldErrors.email">{{
+            fieldErrors.email
+          }}</span>
         </div>
       </div>
 
@@ -121,30 +125,44 @@
           </div>
           <input
             type="password"
+            [(ngModel)]="password"
+            name="password"
             placeholder="••••••••"
             class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            required=""
+            #passwordCtrl="ngModel"
           />
+          <span
+            class="error text-red-500 text-sm mt-1"
+            *ngIf="passwordCtrl.invalid && (passwordCtrl.touched || submitted)"
+          >
+            <span *ngIf="passwordCtrl.errors?.['required']"
+              >Password is required</span
+            >
+          </span>
+          <span
+            class="error text-red-500 text-sm mt-1"
+            *ngIf="fieldErrors.password"
+            >{{ fieldErrors.password }}</span
+          >
         </div>
+      </div>
+
+      <!-- General Error Message -->
+      <div
+        class="error bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg mb-6"
+        *ngIf="fieldErrors.general"
+      >
+        {{ fieldErrors.general }}
       </div>
 
       <!-- Login Button -->
       <button
-        class="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/50 hover:shadow-xl hover:shadow-purple-500/60 transform hover:-translate-y-0.5 transition-all duration-200"
+        type="submit"
+        class="w-full py-4 px-6 bg-gradient-to-r bg-black text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
       >
         Login
       </button>
-
-      <!-- Demo Info -->
-      <p class="text-center text-gray-500 text-sm mt-6">
-        Demo app - any email/password combination will work
-      </p>
-    </div>
-
-    <!-- Help Button -->
-    <button
-      class="fixed bottom-6 right-6 w-12 h-12 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-900 transition-all flex items-center justify-center"
-    >
-      <span class="text-xl font-semibold">?</span>
-    </button>
+    </form>
   </div>
 </div>
