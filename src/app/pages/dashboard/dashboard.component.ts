@@ -7,11 +7,21 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PriceFormatPipe } from '../../pipes/price-format.pipe';
 import { DashboardChartsComponent } from '../../components/dashboard-charts.component';
+import { ConfirmationModalComponent } from '../../components/confirmation-modal.component';
+import { ToastContainerComponent } from '../../components/toast-container.component';
+import { ConfirmationService } from '../../services/confirmation.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, DashboardChartsComponent, PriceFormatPipe],
+  imports: [
+    CommonModule,
+    DashboardChartsComponent,
+    PriceFormatPipe,
+    ConfirmationModalComponent,
+    ToastContainerComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -54,6 +64,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private confirmationService: ConfirmationService,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -96,47 +108,64 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteExpense(expenseId: string): void {
-    if (!confirm('Are you sure you want to delete this expense?')) {
-      return;
-    }
+    this.confirmationService
+      .confirm({
+        title: 'Delete Expense',
+        message: 'Are you sure you want to delete this expense?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        isDangerous: true,
+      })
+      .then((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
 
-    const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: `Bearer ${token}` };
 
-    this.http
-      .delete(`${this.apiUrl}/api/expenses/${expenseId}`, { headers })
-      .subscribe({
-        next: () => {
-          console.log('Expense deleted successfully');
-          // Remove from local arrays
-          this.expenses = this.expenses.filter((exp) => exp._id !== expenseId);
-          this.filteredExpenses = this.filteredExpenses.filter(
-            (exp) => exp._id !== expenseId,
-          );
-
-          // Recalculate everything
-          this.calculateStats();
-          this.updateCategoryCount();
-          this.prepareCategoryChartData();
-          this.prepareMonthlyChartData();
-
-          // Update charts
-          if (this.chartsComponent && this.expenses.length > 0) {
-            setTimeout(() => {
-              this.chartsComponent.updateCharts(
-                this.categoryChartData,
-                this.monthlyChartData,
+        this.http
+          .delete(`${this.apiUrl}/api/expenses/${expenseId}`, { headers })
+          .subscribe({
+            next: () => {
+              console.log('Expense deleted successfully');
+              // Remove from local arrays
+              this.expenses = this.expenses.filter(
+                (exp) => exp._id !== expenseId,
               );
-            }, 100);
-          }
-        },
-        error: (error) => {
-          console.error('Error deleting expense:', error);
-          alert('Failed to delete expense. Please try again.');
-          if (error.status === 401) {
-            this.router.navigate(['/login']);
-          }
-        },
+              this.filteredExpenses = this.filteredExpenses.filter(
+                (exp) => exp._id !== expenseId,
+              );
+
+              // Recalculate everything
+              this.calculateStats();
+              this.updateCategoryCount();
+              this.prepareCategoryChartData();
+              this.prepareMonthlyChartData();
+              this.updatePaginatedExpenses();
+
+              // Update charts
+              if (this.chartsComponent && this.expenses.length > 0) {
+                setTimeout(() => {
+                  this.chartsComponent.updateCharts(
+                    this.categoryChartData,
+                    this.monthlyChartData,
+                  );
+                }, 100);
+              }
+
+              // Show success toast
+              this.toastService.success('Expense deleted successfully');
+            },
+            error: (error) => {
+              this.toastService.error(
+                'Failed to delete expense. Please try again.',
+              );
+              if (error.status === 401) {
+                this.router.navigate(['/login']);
+              }
+            },
+          });
       });
   }
 
