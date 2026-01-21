@@ -51,7 +51,10 @@ export class DashboardComponent implements OnInit {
   categoryChartData: any[] = [];
   monthlyChartData: any[] = [];
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.loadUserData();
@@ -91,6 +94,52 @@ export class DashboardComponent implements OnInit {
         },
       });
   }
+
+  deleteExpense(expenseId: string): void {
+    if (!confirm('Are you sure you want to delete this expense?')) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    this.http
+      .delete(`${this.apiUrl}/api/expenses/${expenseId}`, { headers })
+      .subscribe({
+        next: () => {
+          console.log('Expense deleted successfully');
+          // Remove from local arrays
+          this.expenses = this.expenses.filter((exp) => exp._id !== expenseId);
+          this.filteredExpenses = this.filteredExpenses.filter(
+            (exp) => exp._id !== expenseId,
+          );
+
+          // Recalculate everything
+          this.calculateStats();
+          this.updateCategoryCount();
+          this.prepareCategoryChartData();
+          this.prepareMonthlyChartData();
+
+          // Update charts
+          if (this.chartsComponent && this.expenses.length > 0) {
+            setTimeout(() => {
+              this.chartsComponent.updateCharts(
+                this.categoryChartData,
+                this.monthlyChartData,
+              );
+            }, 100);
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting expense:', error);
+          alert('Failed to delete expense. Please try again.');
+          if (error.status === 401) {
+            this.router.navigate(['/login']);
+          }
+        },
+      });
+  }
+
   calculateStats(): void {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -99,7 +148,7 @@ export class DashboardComponent implements OnInit {
 
     this.stats.totalSpent = this.expenses.reduce(
       (sum, expense) => sum + expense.amount,
-      0
+      0,
     );
 
     this.stats.thisMonth = this.expenses
@@ -140,15 +189,11 @@ export class DashboardComponent implements OnInit {
       this.filteredExpenses = this.expenses;
     } else {
       this.filteredExpenses = this.expenses.filter(
-        (exp) => exp.category === category
+        (exp) => exp.category === category,
       );
     }
 
     this.updatePaginatedExpenses();
-  }
-
-  formatCurrency(amount: number): string {
-    return `$${amount.toFixed(2)}`;
   }
 
   formatDate(date: Date): string {
@@ -178,7 +223,7 @@ export class DashboardComponent implements OnInit {
 
     const total = Object.values(categoryTotals).reduce(
       (sum, amount) => sum + amount,
-      0
+      0,
     );
 
     this.categoryChartData = Object.entries(categoryTotals)
@@ -237,7 +282,7 @@ export class DashboardComponent implements OnInit {
 
   goToPage(page: number): void {
     const totalPages = Math.ceil(
-      this.filteredExpenses.length / this.itemsPerPage
+      this.filteredExpenses.length / this.itemsPerPage,
     );
     if (page >= 1 && page <= totalPages) {
       this.currentPage = page;
