@@ -7,7 +7,7 @@ import { Toast, ToastService } from '../services/toast.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="fixed top-4 right-4 z-[999] pointer-events-none">
+    <div class="fixed top-4 right-4 z-999 pointer-events-none">
       <div
         *ngFor="let toast of toasts"
         [class]="getToastClasses(toast.type)"

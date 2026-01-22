@@ -327,6 +327,10 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/add-expense']);
   }
 
+  navigateToTaxCalculator(): void {
+    this.router.navigate(['/tax-calculator']);
+  }
+
   navigateToLandingPage(): void {
     this.router.navigate(['/']);
   }

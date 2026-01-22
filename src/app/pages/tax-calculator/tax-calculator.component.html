@@ -1,0 +1,346 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Tax Form -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Income Details
+          </h2>
+
+          <form [formGroup]="taxForm" (ngSubmit)="calculateTax()">
+            <!-- Income Type -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-900 mb-3">
+                Income Type <span class="text-red-500">*</span>
+              </label>
+              <div class="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  (click)="taxForm.patchValue({ incomeType: 'annual' })"
+                  [class.bg-purple-600]="taxForm.value.incomeType === 'annual'"
+                  [class.text-white]="taxForm.value.incomeType === 'annual'"
+                  [class.border-purple-600]="
+                    taxForm.value.incomeType === 'annual'
+                  "
+                  [class.bg-white]="taxForm.value.incomeType !== 'annual'"
+                  [class.text-gray-700]="taxForm.value.incomeType !== 'annual'"
+                  [class.border-gray-300]="
+                    taxForm.value.incomeType !== 'annual'
+                  "
+                  class="px-4 py-3 border-2 rounded-lg font-medium transition hover:shadow-md"
+                >
+                  Annual Income
+                </button>
+                <button
+                  type="button"
+                  (click)="taxForm.patchValue({ incomeType: 'monthly' })"
+                  [class.bg-purple-600]="taxForm.value.incomeType === 'monthly'"
+                  [class.text-white]="taxForm.value.incomeType === 'monthly'"
+                  [class.border-purple-600]="
+                    taxForm.value.incomeType === 'monthly'
+                  "
+                  [class.bg-white]="taxForm.value.incomeType !== 'monthly'"
+                  [class.text-gray-700]="taxForm.value.incomeType !== 'monthly'"
+                  [class.border-gray-300]="
+                    taxForm.value.incomeType !== 'monthly'
+                  "
+                  class="px-4 py-3 border-2 rounded-lg font-medium transition hover:shadow-md"
+                >
+                  Monthly Income
+                </button>
+              </div>
+            </div>
+
+            <!-- Gross Income -->
+            <div class="mb-6">
+              <label
+                for="grossIncome"
+                class="block text-sm font-medium text-gray-900 mb-2"
+              >
+                Gross
+                {{
+                  taxForm.value.incomeType === "monthly" ? "Monthly" : "Annual"
+                }}
+                Income (₦) <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="grossIncome"
+                type="number"
+                formControlName="grossIncome"
+                placeholder="e.g., 5000000"
+                [class.border-red-500]="isFieldInvalid('grossIncome')"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              />
+              <p
+                *ngIf="isFieldInvalid('grossIncome')"
+                class="mt-1 text-sm text-red-500"
+              >
+                {{ getFieldError("grossIncome") }}
+              </p>
+            </div>
+
+            <!-- Reliefs Section -->
+            <div class="mb-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                Tax Reliefs (%)
+              </h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Pension -->
+                <div>
+                  <label
+                    for="pension"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Pension Contribution
+                  </label>
+                  <div class="relative">
+                    <input
+                      id="pension"
+                      type="number"
+                      step="0.1"
+                      formControlName="pension"
+                      class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    />
+                    <span class="absolute right-3 top-3 text-gray-500">%</span>
+                  </div>
+                </div>
+
+                <!-- NHF -->
+                <div>
+                  <label
+                    for="nhf"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    NHF (National Housing Fund)
+                  </label>
+                  <div class="relative">
+                    <input
+                      id="nhf"
+                      type="number"
+                      step="0.1"
+                      formControlName="nhf"
+                      class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    />
+                    <span class="absolute right-3 top-3 text-gray-500">%</span>
+                  </div>
+                </div>
+
+                <!-- NHIS -->
+                <div>
+                  <label
+                    for="nhis"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    NHIS (Health Insurance)
+                  </label>
+                  <div class="relative">
+                    <input
+                      id="nhis"
+                      type="number"
+                      step="0.1"
+                      formControlName="nhis"
+                      class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    />
+                    <span class="absolute right-3 top-3 text-gray-500">%</span>
+                  </div>
+                </div>
+
+                <!-- Life Assurance -->
+                <div>
+                  <label
+                    for="lifeAssurance"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Life Assurance Premium (₦)
+                  </label>
+                  <input
+                    id="lifeAssurance"
+                    type="number"
+                    formControlName="lifeAssurance"
+                    placeholder="0"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Other Reliefs -->
+            <div class="mb-8">
+              <label
+                for="otherReliefs"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Other Tax Reliefs (₦)
+              </label>
+              <input
+                id="otherReliefs"
+                type="number"
+                formControlName="otherReliefs"
+                placeholder="0"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              />
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3">
+              <button
+                type="submit"
+                class="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"
+              >
+                Calculate Tax
+              </button>
+              <button
+                type="button"
+                (click)="resetCalculator()"
+                class="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tax Brackets Reference -->
+      <div class="lg:col-span-1">
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Tax Brackets (2024)
+          </h3>
+          <div class="space-y-3">
+            <div
+              *ngFor="let bracket of taxBrackets"
+              class="pb-3 border-b border-gray-200 last:border-0"
+            >
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-sm font-medium text-gray-700">{{
+                  bracket.annualBand
+                }}</span>
+                <span class="text-sm font-bold text-purple-600"
+                  >{{ bracket.rate }}%</span
+                >
+              </div>
+              <p class="text-xs text-gray-500">
+                {{ bracket.monthlyBand }} monthly
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div *ngIf="showResult && calculationResult" class="mt-8">
+      <div
+        class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl shadow-lg p-8 text-white mb-6"
+      >
+        <h2 class="text-2xl font-bold mb-6">Tax Calculation Results</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div>
+            <p class="text-purple-200 text-sm mb-1">Gross Income</p>
+            <p class="text-2xl font-bold">
+              {{ formatCurrency(calculationResult.grossIncome) }}
+            </p>
+          </div>
+          <div>
+            <p class="text-purple-200 text-sm mb-1">Total Tax</p>
+            <p class="text-2xl font-bold">
+              {{ formatCurrency(calculationResult.totalTax) }}
+            </p>
+          </div>
+          <div>
+            <p class="text-purple-200 text-sm mb-1">Net Income</p>
+            <p class="text-2xl font-bold">
+              {{ formatCurrency(calculationResult.netIncome) }}
+            </p>
+          </div>
+          <div>
+            <p class="text-purple-200 text-sm mb-1">Effective Rate</p>
+            <p class="text-2xl font-bold">
+              {{ formatNumber(calculationResult.effectiveRate) }}%
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tax Breakdown -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">
+          Tax Breakdown by Bracket
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-gray-200">
+                <th
+                  class="text-left py-3 px-4 text-sm font-semibold text-gray-700"
+                >
+                  Bracket
+                </th>
+                <th
+                  class="text-right py-3 px-4 text-sm font-semibold text-gray-700"
+                >
+                  Taxable Income
+                </th>
+                <th
+                  class="text-right py-3 px-4 text-sm font-semibold text-gray-700"
+                >
+                  Rate
+                </th>
+                <th
+                  class="text-right py-3 px-4 text-sm font-semibold text-gray-700"
+                >
+                  Tax
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let item of calculationResult.breakdown"
+                class="border-b border-gray-100"
+              >
+                <td class="py-3 px-4 text-sm text-gray-900">
+                  Bracket {{ item.bracket }}
+                </td>
+                <td class="py-3 px-4 text-sm text-right text-gray-900">
+                  {{ formatCurrency(item.income) }}
+                </td>
+                <td
+                  class="py-3 px-4 text-sm text-right text-purple-600 font-medium"
+                >
+                  {{ item.rate }}%
+                </td>
+                <td
+                  class="py-3 px-4 text-sm text-right font-semibold text-gray-900"
+                >
+                  {{ formatCurrency(item.tax) }}
+                </td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td
+                  colspan="3"
+                  class="py-3 px-4 text-sm font-bold text-gray-900"
+                >
+                  Total Tax
+                </td>
+                <td
+                  class="py-3 px-4 text-sm text-right font-bold text-purple-600"
+                >
+                  {{ formatCurrency(calculationResult.totalTax) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

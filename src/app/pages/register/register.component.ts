@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -29,7 +29,7 @@ export class RegisterComponent {
   constructor(
     private auth: AuthService,
     private router: Router,
-    private fBuilder: FormBuilder
+    private fBuilder: FormBuilder,
   ) {}
 
   registerForm = this.fBuilder.group({
