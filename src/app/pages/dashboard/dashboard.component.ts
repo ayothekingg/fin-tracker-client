@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Expense } from '../../../models/expense.model';
-import { CategoryCount } from '../../../models/category';
-import { DashboardStats } from '../../../models/dashboardStats';
+import { Expense } from '../../models/expense.model';
+import { CategoryCount } from '../../models/category';
+import { DashboardStats } from '../../models/dashboardStats';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
