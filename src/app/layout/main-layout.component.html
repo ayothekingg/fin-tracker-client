@@ -32,7 +32,7 @@
 
       <div
         *ngIf="!isSidebarOpen"
-        class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center mx-auto"
+        class="w-10 h-10 bg-black rounded-lg flex items-center justify-center mx-auto"
       >
         <svg
           class="w-6 h-6 text-white"
@@ -55,8 +55,8 @@
       <button
         *ngFor="let item of navigationItems"
         (click)="navigateTo(item.route)"
-        [class.bg-purple-50]="item.active"
-        [class.text-purple-600]="item.active"
+        [class.bg-gray-200]="item.active"
+        [class.text-black-600]="item.active"
         [class.text-gray-700]="!item.active"
         [class.hover:bg-gray-50]="!item.active"
         [class.justify-center]="!isSidebarOpen"
