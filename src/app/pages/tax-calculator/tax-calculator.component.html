@@ -243,25 +243,25 @@
           <div>
             <p class="text-purple-200 text-sm mb-1">Gross Income</p>
             <p class="text-2xl font-bold">
-              {{ formatCurrency(calculationResult.grossIncome) }}
+              {{ calculationResult.grossIncome | nairaFormat }}
             </p>
           </div>
           <div>
             <p class="text-purple-200 text-sm mb-1">Total Tax</p>
             <p class="text-2xl font-bold">
-              {{ formatCurrency(calculationResult.totalTax) }}
+              {{ calculationResult.totalTax | nairaFormat }}
             </p>
           </div>
           <div>
             <p class="text-purple-200 text-sm mb-1">Net Income</p>
             <p class="text-2xl font-bold">
-              {{ formatCurrency(calculationResult.netIncome) }}
+              {{ calculationResult.netIncome | nairaFormat }}
             </p>
           </div>
           <div>
             <p class="text-purple-200 text-sm mb-1">Effective Rate</p>
             <p class="text-2xl font-bold">
-              {{ formatNumber(calculationResult.effectiveRate) }}%
+              {{ calculationResult.effectiveRate }}%
             </p>
           </div>
         </div>

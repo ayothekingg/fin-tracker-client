@@ -6,7 +6,7 @@ import { DashboardStats } from '../../models/dashboardStats.model';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PriceFormatPipe } from '../../pipes/price-format.pipe';
+import { NairaFormatPipe } from '../../pipes/naira-format.pipe';
 import { DashboardChartsComponent } from '../../components/dashboard-charts.component';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal.component';
 import { ToastContainerComponent } from '../../components/toast-container.component';
@@ -19,7 +19,7 @@ import { ToastService } from '../../services/toast.service';
   imports: [
     CommonModule,
     DashboardChartsComponent,
-    PriceFormatPipe,
+    NairaFormatPipe,
     ConfirmationModalComponent,
     ToastContainerComponent,
   ],

@@ -1,11 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'priceFormat',
+  name: 'nairaFormat',
   pure: true,
   standalone: true,
 })
-export class PriceFormatPipe implements PipeTransform {
+export class NairaFormatPipe implements PipeTransform {
   transform(value: number | null | undefined, symbol = '₦'): string {
     const v = Number(value ?? 0);
     if (isNaN(v)) return `${symbol}0.00`;

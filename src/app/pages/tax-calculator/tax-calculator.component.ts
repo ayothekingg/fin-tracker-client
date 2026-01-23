@@ -12,11 +12,12 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NairaFormatPipe } from '../../pipes/naira-format.pipe';
 
 @Component({
   selector: 'app-tax-calculator',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NairaFormatPipe],
   templateUrl: './tax-calculator.component.html',
   styleUrls: [],
 })
