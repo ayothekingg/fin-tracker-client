@@ -4,7 +4,7 @@ import {
   TaxBracket,
   TaxCalculationResult,
   taxBrackets,
-} from '../../models/tax.model';
+} from '../../shared/models/tax.model';
 import {
   FormBuilder,
   FormGroup,
@@ -12,7 +12,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NairaFormatPipe } from '../../pipes/naira-format.pipe';
+import { NairaFormatPipe } from '../../shared/pipes/naira-format.pipe';
 
 @Component({
   selector: 'app-tax-calculator',

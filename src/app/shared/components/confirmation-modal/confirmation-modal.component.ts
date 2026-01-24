@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {
   ConfirmationService,
   ConfirmationDialogState,
-} from '../services/confirmation.service';
+} from '../confirmation-modal/confirmation.service';
 
 @Component({
   selector: 'app-confirmation-modal',

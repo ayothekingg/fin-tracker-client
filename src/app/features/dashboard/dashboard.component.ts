@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Expense } from '../../models/expense.model';
-import { CategoryCount } from '../../models/category.model';
-import { DashboardStats } from '../../models/dashboardStats.model';
+import { Expense } from '../../shared/models/expense.model';
+import { CategoryCount } from '../../shared/models/category.model';
+import { DashboardStats } from '../../shared/models/dashboardStats.model';
 
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NairaFormatPipe } from '../../pipes/naira-format.pipe';
-import { DashboardChartsComponent } from '../../components/dashboard-charts.component';
-import { ConfirmationModalComponent } from '../../components/confirmation-modal.component';
-import { ToastContainerComponent } from '../../components/toast-container.component';
-import { ConfirmationService } from '../../services/confirmation.service';
-import { ToastService } from '../../services/toast.service';
+import { NairaFormatPipe } from '../../shared/pipes/naira-format.pipe';
+import { DashboardChartsComponent } from '../../shared/components/dashboard-charts.component';
+import { ConfirmationModalComponent } from '../../shared/components/confirmation-modal/confirmation-modal.component';
+import { ToastContainerComponent } from '../../shared/components/toast-container/toast-container.component';
+import { ConfirmationService } from '../../shared/components/confirmation-modal/confirmation.service';
+import { ToastService } from '../../shared/components/toast-container/toast.service';
 
 @Component({
   selector: 'app-dashboard',

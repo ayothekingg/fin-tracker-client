@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { RegisterComponent } from './pages/register/register.component';
-import { LoginComponent } from './pages/login/login.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { AddExpenseComponent } from './pages/add-expense/add-expense.component';
-import { LandingComponent } from './pages/landing/landing.component';
-import { TaxCalculatorComponent } from './pages/tax-calculator/tax-calculator.component';
+import { RegisterComponent } from './features/auth/register/register.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { AddExpenseComponent } from './features/add-expense/add-expense.component';
+import { LandingComponent } from './features/landing/landing.component';
+import { TaxCalculatorComponent } from './features/tax-calculator/tax-calculator.component';
 import { MainLayoutComponent } from './layout/main-layout.component';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
