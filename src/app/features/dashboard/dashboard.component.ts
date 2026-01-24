@@ -13,6 +13,18 @@ import { ToastContainerComponent } from '../../shared/components/toast-container
 import { ConfirmationService } from '../../shared/components/confirmation-modal/confirmation.service';
 import { ToastService } from '../../shared/components/toast-container/toast.service';
 
+interface CategoryChartData {
+  category: string;
+  amount: number;
+  percentage: number;
+  color: string;
+}
+
+interface MonthlyChartData {
+  month: string;
+  amount: number;
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -59,8 +71,8 @@ export class DashboardComponent implements OnInit {
   userEmail: string = '';
   private apiUrl = 'http://localhost:3000';
 
-  categoryChartData: any[] = [];
-  monthlyChartData: any[] = [];
+  categoryChartData: CategoryChartData[] = [];
+  monthlyChartData: MonthlyChartData[] = [];
 
   constructor(
     private http: HttpClient,
@@ -76,6 +88,7 @@ export class DashboardComponent implements OnInit {
 
   loadUserData(): void {
     const token = localStorage.getItem('token');
+
     if (token) {
       const payload = JSON.parse(atob(token.split('.')[1]));
       this.userEmail = payload.email;
