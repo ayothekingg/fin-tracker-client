@@ -12,18 +12,10 @@ import { ConfirmationModalComponent } from '../../shared/components/confirmation
 import { ToastContainerComponent } from '../../shared/components/toast-container/toast-container.component';
 import { ConfirmationService } from '../../shared/components/confirmation-modal/confirmation.service';
 import { ToastService } from '../../shared/components/toast-container/toast.service';
-
-interface CategoryChartData {
-  category: string;
-  amount: number;
-  percentage: number;
-  color: string;
-}
-
-interface MonthlyChartData {
-  month: string;
-  amount: number;
-}
+import {
+  CategoryChartData,
+  MonthlyChartData,
+} from '../../shared/models/chart.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -142,7 +134,6 @@ export class DashboardComponent implements OnInit {
           .delete(`${this.apiUrl}/api/expenses/${expenseId}`, { headers })
           .subscribe({
             next: () => {
-              console.log('Expense deleted successfully');
               // Remove from local arrays
               this.expenses = this.expenses.filter(
                 (exp) => exp._id !== expenseId,
@@ -169,10 +160,10 @@ export class DashboardComponent implements OnInit {
               }
 
               // Show success toast
-              this.toastService.success('Expense deleted successfully');
+              this.toastService.successToast('Expense deleted successfully');
             },
             error: (error) => {
-              this.toastService.error(
+              this.toastService.errorToast(
                 'Failed to delete expense. Please try again.',
               );
               if (error.status === 401) {

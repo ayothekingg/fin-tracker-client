@@ -1,17 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-export interface ConfirmationDialogConfig {
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  isDangerous?: boolean;
-}
-
-export interface ConfirmationDialogState extends ConfirmationDialogConfig {
-  isOpen: boolean;
-}
+import {
+  ConfirmationDialogConfig,
+  ConfirmationDialogState,
+} from '../../models/confirmation.model';
 
 @Injectable({
   providedIn: 'root',

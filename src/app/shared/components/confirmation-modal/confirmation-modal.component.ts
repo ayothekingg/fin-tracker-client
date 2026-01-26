@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ConfirmationService,
-  ConfirmationDialogState,
-} from '../confirmation-modal/confirmation.service';
-
+import { ConfirmationService } from '../confirmation-modal/confirmation.service';
+import { ConfirmationDialogState } from '../../models/confirmation.model';
 @Component({
   selector: 'app-confirmation-modal',
   standalone: true,
