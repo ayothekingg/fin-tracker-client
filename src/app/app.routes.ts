@@ -7,6 +7,7 @@ import { LandingComponent } from './features/landing/landing.component';
 import { TaxCalculatorComponent } from './features/tax-calculator/tax-calculator.component';
 import { MainLayoutComponent } from './layout/main-layout.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { BudgetManagementComponent } from './features/budget-management/budget-management.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,7 @@ export const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
   },
+
   {
     path: '',
     component: MainLayoutComponent,
@@ -33,6 +35,10 @@ export const routes: Routes = [
       {
         path: 'add-expense',
         component: AddExpenseComponent,
+      },
+      {
+        path: 'budgets',
+        component: BudgetManagementComponent,
       },
       {
         path: 'tax-calculator',

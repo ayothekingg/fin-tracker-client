@@ -1,0 +1,567 @@
+<div>
+  <!-- Header with Month Selector -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Budget Management</h1>
+        <p class="text-gray-600 mt-1">Track and manage your spending budgets</p>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-3">
+          <button
+            (click)="changeMonth(-1)"
+            class="p-2 hover:bg-gray-100 rounded-lg transition"
+          >
+            <svg
+              class="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+          </button>
+
+          <div class="text-center min-w-[150px]">
+            <p class="text-lg font-semibold text-gray-900">
+              {{ getMonthName(selectedMonth) }} {{ selectedYear }}
+            </p>
+          </div>
+
+          <button
+            (click)="changeMonth(1)"
+            class="p-2 hover:bg-gray-100 rounded-lg transition"
+          >
+            <svg
+              class="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <button
+          (click)="openCreateForm()"
+          class="px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition flex items-center space-x-2"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+          <span>Add Budget</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-12">
+    <div
+      class="animate-spin w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full mx-auto"
+    ></div>
+    <p class="text-gray-600 mt-4">Loading budgets...</p>
+  </div>
+
+  <!-- Budget Summary Cards -->
+  <div
+    *ngIf="!isLoading && budgetStatus"
+    class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+  >
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Budget</p>
+          <p class="text-3xl font-bold text-gray-900">
+            {{ formatCurrency(budgetStatus.totalBudget) }}
+          </p>
+        </div>
+        <button
+          (click)="openTotalBudgetForm()"
+          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+          title="Edit total budget"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+      <p class="text-sm text-gray-600 mb-1">Total Spent</p>
+      <p
+        class="text-3xl font-bold"
+        [class.text-red-600]="
+          budgetStatus.totalSpent > budgetStatus.totalBudget
+        "
+        [class.text-gray-900]="
+          budgetStatus.totalSpent <= budgetStatus.totalBudget
+        "
+      >
+        {{ formatCurrency(budgetStatus.totalSpent) }}
+      </p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+      <p class="text-sm text-gray-600 mb-1">Remaining</p>
+      <p
+        class="text-3xl font-bold"
+        [class.text-green-600]="
+          budgetStatus.totalBudget - budgetStatus.totalSpent >= 0
+        "
+        [class.text-red-600]="
+          budgetStatus.totalBudget - budgetStatus.totalSpent < 0
+        "
+      >
+        {{ formatCurrency(budgetStatus.totalBudget - budgetStatus.totalSpent) }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Alerts Section -->
+  <div
+    *ngIf="
+      !isLoading &&
+      budgetStatus &&
+      (budgetStatus.summary.overBudgetCount > 0 ||
+        budgetStatus.summary.nearLimitCount > 0)
+    "
+    class="mb-8"
+  >
+    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+      <div class="flex items-start space-x-3">
+        <svg
+          class="w-6 h-6 text-yellow-600 shrink-0 mt-0.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          ></path>
+        </svg>
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold text-yellow-900 mb-2">
+            Budget Alerts
+          </h3>
+          <ul class="space-y-1">
+            <li
+              *ngIf="budgetStatus.summary.overBudgetCount > 0"
+              class="text-sm text-yellow-800"
+            >
+              <strong>{{ budgetStatus.summary.overBudgetCount }}</strong>
+              {{
+                budgetStatus.summary.overBudgetCount === 1
+                  ? "category is"
+                  : "categories are"
+              }}
+              over budget
+            </li>
+            <li
+              *ngIf="budgetStatus.summary.nearLimitCount > 0"
+              class="text-sm text-yellow-800"
+            >
+              <strong>{{ budgetStatus.summary.nearLimitCount }}</strong>
+              {{
+                budgetStatus.summary.nearLimitCount === 1
+                  ? "category is"
+                  : "categories are"
+              }}
+              near limit
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget List -->
+  <div *ngIf="!isLoading && budgetStatus" class="space-y-4">
+    <div
+      *ngFor="let budgetStatus of budgetStatus.budgets"
+      class="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+    >
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-2">
+            <h3 class="text-xl font-semibold text-gray-900">
+              {{ budgetStatus.budget.category }}
+            </h3>
+            <span
+              [class]="getStatusBadgeColor(budgetStatus)"
+              class="px-3 py-1 rounded-full text-xs font-medium"
+            >
+              {{ getStatusText(budgetStatus) }}
+            </span>
+          </div>
+
+          <div class="flex items-center space-x-6 text-sm">
+            <div>
+              <span class="text-gray-600">Budget:</span>
+              <span class="font-semibold text-gray-900 ml-1">{{
+                formatCurrency(budgetStatus.budget.amount)
+              }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Spent:</span>
+              <span
+                class="font-semibold ml-1"
+                [class.text-red-600]="budgetStatus.isOverBudget"
+                [class.text-gray-900]="!budgetStatus.isOverBudget"
+              >
+                {{ formatCurrency(budgetStatus.spent) }}
+              </span>
+            </div>
+            <div>
+              <span class="text-gray-600">Remaining:</span>
+              <span
+                class="font-semibold ml-1"
+                [class.text-green-600]="budgetStatus.remaining >= 0"
+                [class.text-red-600]="budgetStatus.remaining < 0"
+              >
+                {{ formatCurrency(budgetStatus.remaining) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button
+            (click)="openEditForm(budgetStatus)"
+            class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+            title="Edit budget"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              ></path>
+            </svg>
+          </button>
+          <button
+            (click)="deleteBudget(budgetStatus.budget._id!)"
+            class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+            title="Delete budget"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mb-3">
+        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+          <div
+            [class]="
+              getProgressBarColor(
+                budgetStatus.percentUsed,
+                budgetStatus.isOverBudget
+              )
+            "
+            [style.width.%]="
+              budgetStatus.percentUsed > 100 ? 100 : budgetStatus.percentUsed
+            "
+            class="h-3 rounded-full transition-all duration-500"
+          ></div>
+        </div>
+        <p class="text-sm text-gray-600 mt-1">
+          {{ budgetStatus.percentUsed.toFixed(1) }}% used
+        </p>
+      </div>
+
+      <!-- Alerts -->
+      <div *ngIf="budgetStatus.alerts.length > 0" class="space-y-1">
+        <div
+          *ngFor="let alert of budgetStatus.alerts"
+          class="flex items-center space-x-2 text-sm"
+          [class.text-red-600]="budgetStatus.isOverBudget"
+          [class.text-yellow-600]="!budgetStatus.isOverBudget"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            ></path>
+          </svg>
+          <span>{{ alert }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="!isLoading && budgetStatus && budgetStatus.budgets.length === 0"
+    class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center"
+  >
+    <svg
+      class="w-20 h-20 mx-auto mb-4 text-gray-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+      ></path>
+    </svg>
+    <h3 class="text-xl font-semibold text-gray-900 mb-2">No Budgets Set</h3>
+    <p class="text-gray-600 mb-6">
+      Start by creating your first budget to track your spending
+    </p>
+    <button
+      (click)="openCreateForm()"
+      class="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition"
+    >
+      Create Budget
+    </button>
+  </div>
+
+  <!-- Budget Form Modal -->
+  <div
+    *ngIf="showForm"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  >
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">
+          {{ editingBudget ? "Edit Budget" : "Create Budget" }}
+        </h2>
+        <button
+          (click)="closeForm()"
+          class="p-2 hover:bg-gray-100 rounded-lg transition"
+        >
+          <svg
+            class="w-5 h-5 text-gray-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="budgetForm" (ngSubmit)="saveBudget()">
+        <!-- Category -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-900 mb-2">
+            Category <span class="text-red-500">*</span>
+          </label>
+          <select
+            formControlName="category"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+          >
+            <option value="">Select category</option>
+            <option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Amount -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-900 mb-2">
+            Budget Amount (₦) <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            formControlName="amount"
+            placeholder="50000"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <!-- Alert Enabled -->
+        <div class="mb-4 flex items-center">
+          <input
+            type="checkbox"
+            id="alertEnabled"
+            formControlName="alertEnabled"
+            class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+          />
+          <label for="alertEnabled" class="ml-2 text-sm text-gray-900"
+            >Enable budget alerts</label
+          >
+        </div>
+
+        <!-- Alert Threshold -->
+        <div class="mb-6" *ngIf="budgetForm.value.alertEnabled">
+          <label class="block text-sm font-medium text-gray-900 mb-2">
+            Alert Threshold (%)
+          </label>
+          <input
+            type="number"
+            formControlName="alertThreshold"
+            placeholder="80"
+            min="1"
+            max="100"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+          />
+          <p class="text-xs text-gray-500 mt-1">
+            Alert me when {{ budgetForm.value.alertThreshold }}% of budget is
+            used
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            class="flex-1 px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition"
+          >
+            {{ editingBudget ? "Update Budget" : "Create Budget" }}
+          </button>
+          <button
+            type="button"
+            (click)="closeForm()"
+            class="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Total Budget Form Modal -->
+  <div
+    *ngIf="showTotalBudgetForm"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  >
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">Set Total Budget</h2>
+        <button
+          (click)="closeTotalBudgetForm()"
+          class="p-2 hover:bg-gray-100 rounded-lg transition"
+        >
+          <svg
+            class="w-5 h-5 text-gray-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="totalBudgetForm" (ngSubmit)="saveTotalBudget()">
+        <!-- Total Amount -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-900 mb-2">
+            Total Budget Amount (₦) <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            formControlName="totalAmount"
+            placeholder="500000"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+          />
+          <p class="text-xs text-gray-500 mt-2">
+            This is the total amount you want to spend across all categories for
+            this period
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            class="flex-1 px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition"
+          >
+            Set Total Budget
+          </button>
+          <button
+            type="button"
+            (click)="closeTotalBudgetForm()"
+            class="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal></app-confirmation-modal>
+
+<!-- Toast Container -->
+<app-toast-container></app-toast-container>

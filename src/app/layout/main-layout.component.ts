@@ -28,6 +28,12 @@ export class MainLayoutComponent implements OnInit {
       route: '/tax-calculator',
       active: false,
     },
+    {
+      label: 'Budgets',
+      icon: 'budget',
+      route: '/budgets',
+      active: false,
+    },
   ];
 
   constructor(private router: Router) {}
