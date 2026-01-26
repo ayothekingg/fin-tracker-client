@@ -9,20 +9,9 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
+import { CategoryChartData, MonthlyChartData } from '../models/chart.model';
 
 Chart.register(...registerables);
-
-interface CategoryData {
-  category: string;
-  amount: number;
-  percentage: number;
-  color: string;
-}
-
-interface MonthlyData {
-  month: string;
-  amount: number;
-}
 
 @Component({
   selector: 'app-dashboard-charts',
@@ -56,8 +45,8 @@ export class DashboardChartsComponent implements OnInit, AfterViewInit {
   @ViewChild('pieChart') pieChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('barChart') barChartRef!: ElementRef<HTMLCanvasElement>;
 
-  @Input() categoryData: CategoryData[] = [];
-  @Input() monthlyData: MonthlyData[] = [];
+  @Input() categoryData: CategoryChartData[] = [];
+  @Input() monthlyData: MonthlyChartData[] = [];
 
   private pieChart: Chart | null = null;
   private barChart: Chart | null = null;
@@ -246,8 +235,10 @@ export class DashboardChartsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Method to update charts with new data
-  updateCharts(categoryData: CategoryData[], monthlyData: MonthlyData[]): void {
+  updateCharts(
+    categoryData: CategoryChartData[],
+    monthlyData: MonthlyChartData[],
+  ): void {
     this.categoryData = categoryData;
     this.monthlyData = monthlyData;
 

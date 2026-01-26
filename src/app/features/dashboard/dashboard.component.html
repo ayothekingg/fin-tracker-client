@@ -2,21 +2,23 @@
 <app-confirmation-modal></app-confirmation-modal>
 <app-toast-container></app-toast-container>
 
-<button
-  (click)="navigateToAddExpense()"
-  class="px-4 py-2 rounded-lg font-medium flex items-center space-x-2"
->
-  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-    ></path>
-  </svg>
-  <span>Add Expense</span>
-</button>
-<div class="min-h-screen bg-gray-50">
+<div class="px-4 md:px-0 py-4">
+  <button
+    (click)="navigateToAddExpense()"
+    class="w-full md:w-auto px-4 py-2 rounded-lg font-medium flex items-center justify-center md:justify-start space-x-2 bg-black text-white hover:bg-gray-800 transition"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+      ></path>
+    </svg>
+    <span>Add Expense</span>
+  </button>
+</div>
+<div class="min-h-screen bg-gray-50 px-4 md:px-0">
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Spent -->
@@ -138,6 +140,7 @@
 
   <!-- Charts Section -->
   <app-dashboard-charts
+    class="hidden md:block"
     *ngIf="expenses.length > 0"
     [categoryData]="categoryChartData"
     [monthlyData]="monthlyChartData"
@@ -146,7 +149,9 @@
 
   <!-- Chart Placeholder -->
   @if (expenses.length === 0) {
-    <div class="bg-white rounded-xl shadow-sm p-8 border border-gray-200 mb-8">
+    <div
+      class="hidden md:block bg-white rounded-xl shadow-sm p-8 border border-gray-200 mb-8"
+    >
       <div class="text-center text-gray-500">
         <svg
           class="w-16 h-16 mx-auto mb-4 text-gray-400"
